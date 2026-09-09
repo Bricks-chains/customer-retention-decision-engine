@@ -1,53 +1,68 @@
 # Customer Retention Decision Engine
 
-An end-to-end Python portfolio project that turns telecom churn data into retention decisions. The project follows four stages: understand the business problem and data, explore churn drivers, build and evaluate a churn model, then translate scores into explainable customer actions.
+I built this project to understand which telecom customers are most likely to churn and how a retention team could decide where to focus its limited outreach capacity.
 
-## Project stages
+The work uses the IBM Telco Customer Churn dataset. I treated the project as both an analytics exercise and a small production-style Python package: the notebook tells the story, while the reusable logic lives in `src/retention_engine/` and is covered by tests.
 
-1. **Stage 1 - Business and data foundation:** define the retention objective, data contract, leakage risks, and reproducible loading.
-2. **Stage 2 - Exploratory analytics:** profile data quality and quantify churn by contract, tenure, payment method, support services, and charges.
-3. **Stage 3 - Predictive modeling:** build a leakage-aware preprocessing pipeline, compare baseline models, and evaluate ROC-AUC, PR-AUC, recall, and calibration.
-4. **Stage 4 - Decision engine:** combine churn probability, customer value, and intervention cost into prioritized, explainable actions.
-5. **Stage 5 - Retention policy:** apply risk thresholds and contact-capacity constraints.
-6. **Stage 6 - Segment analytics:** produce reusable quality and segment churn summaries.
-7. **Stage 7 - Scoring interface:** keep cleaning, scoring, and action delivery modular.
-8. **Stage 8 - Monitoring:** summarize score distributions and high-risk rates.
-9. **Stage 9 - Delivery:** add notebook validation, tests, and continuous integration.
+## What I built
 
-## Quick start
+- Cleaned the source data and handled numeric and categorical features consistently.
+- Excluded identifiers and target-derived fields such as `Churn Value`, `Churn Score`, `CLTV`, and `Churn Reason` to avoid leakage.
+- Built a scikit-learn preprocessing and logistic-regression pipeline.
+- Evaluated the model with ROC-AUC and PR-AUC rather than relying on accuracy alone.
+- Converted churn probabilities into explainable retention actions using customer value and contact cost.
+- Added a capacity-aware queue so the highest-value eligible customers can be prioritized.
+- Added segment summaries, data-quality checks, score monitoring, notebook validation, automated tests, and GitHub Actions CI.
+
+## Results
+
+In the notebook validation run, the pipeline processed a stratified 3,000-customer sample and achieved:
+
+- ROC-AUC: `0.833`
+- PR-AUC: `0.656`
+- 125 customers classified for the priority-save queue
+
+## Core insights
+
+![Core churn insights](assets/core-churn-insights.svg)
+
+The clearest patterns were higher churn among month-to-month customers, electronic-check users, and customers in their first six months. I use these as signals for further investigation and targeted retention testing, not as proof that any single factor causes churn.
+
+## Run it locally
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python -m pytest
+PYTHONPATH=src pytest -q
 ```
 
-Place the IBM Telco Customer Churn workbook at `data/raw/Telco_customer_churn.xlsx` (the raw dataset is intentionally excluded from Git). Run the analysis notebook in `notebooks/` or use the modules in `src/retention_engine/`.
+Place the IBM Telco Customer Churn workbook at `data/raw/Telco_customer_churn.xlsx`, or update the path in the notebook scripts. The raw dataset is intentionally excluded from GitHub.
 
-## Repository map
+To reproduce the validation and charts from Jupyter:
+
+```python
+%run notebooks/retention_engine_validation.py
+%run notebooks/core_insights.py
+```
+
+## Repository structure
 
 ```text
 customer-retention-decision-engine/
-├── data/raw/                  # local-only input data
-├── docs/stages/               # stage 1-4 decisions and findings
-├── notebooks/                 # analysis narrative
-├── src/retention_engine/      # production-style Python package
-├── tests/                     # automated checks
+├── assets/                   # README visualization
+├── docs/                     # analytical and delivery notes
+├── notebooks/                # validation and visualization scripts
+├── src/retention_engine/     # reusable Python package
+├── tests/                    # automated tests
 ├── requirements.txt
 └── README.md
 ```
 
 ## Skills demonstrated
 
-Python, pandas, NumPy, scikit-learn pipelines, feature engineering, model evaluation, testing, data quality, explainable decision rules, and business-focused analytics.
-
-## Core insights
-
-![Core churn insights](assets/core-churn-insights.svg)
-
-The strongest observed risk signals are month-to-month contracts, electronic-check payments, and the first six months of tenure. The chart is generated from the reproducible analysis in `notebooks/core_insights.py`.
+Python, pandas, NumPy, scikit-learn, feature engineering, model evaluation, testing, data-quality analysis, monitoring summaries, explainable decision rules, and business-focused analytics.
 
 ## Responsible use
 
-This is a decision-support prototype, not an autonomous customer action system. Thresholds, costs, and offer policies must be reviewed with customer-success, legal, and commercial stakeholders before production use.
+This is a decision-support prototype, not an autonomous customer-action system. Before production use, I would add model versioning, access controls, drift thresholds, fairness review, consent checks, and uplift experiments to measure whether an intervention actually improves retention.
