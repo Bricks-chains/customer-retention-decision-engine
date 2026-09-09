@@ -8,6 +8,11 @@ An end-to-end Python portfolio project that turns telecom churn data into retent
 2. **Stage 2 - Exploratory analytics:** profile data quality and quantify churn by contract, tenure, payment method, support services, and charges.
 3. **Stage 3 - Predictive modeling:** build a leakage-aware preprocessing pipeline, compare baseline models, and evaluate ROC-AUC, PR-AUC, recall, and calibration.
 4. **Stage 4 - Decision engine:** combine churn probability, customer value, and intervention cost into prioritized, explainable actions.
+5. **Stage 5 - Retention policy:** apply risk thresholds and contact-capacity constraints.
+6. **Stage 6 - Segment analytics:** produce reusable quality and segment churn summaries.
+7. **Stage 7 - Scoring interface:** keep cleaning, scoring, and action delivery modular.
+8. **Stage 8 - Monitoring:** summarize score distributions and high-risk rates.
+9. **Stage 9 - Delivery:** add notebook validation, tests, and continuous integration.
 
 ## Quick start
 
@@ -36,6 +41,12 @@ customer-retention-decision-engine/
 ## Skills demonstrated
 
 Python, pandas, NumPy, scikit-learn pipelines, feature engineering, model evaluation, testing, data quality, explainable decision rules, and business-focused analytics.
+
+## Core insights
+
+![Core churn insights](assets/core-churn-insights.svg)
+
+The strongest observed risk signals are month-to-month contracts, electronic-check payments, and the first six months of tenure. The chart is generated from the reproducible analysis in `notebooks/core_insights.py`.
 
 ## Responsible use
 
